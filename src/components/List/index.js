@@ -1,52 +1,35 @@
-import React, { Component } from 'react'
+import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-export default class List extends Component {
-  constructor(props) {
-    super(props);
+import * as ChapterActions from '../../store/actions/chapter';
 
-    this.state = {
-      list: [
-        {
-          id: 1, title: 'Easy', chapters: [
-            {id: 1, title: 'One'},
-            {id: 2, title: 'Two'},
-            {id: 3, title: 'Three'},
-            {id: 4, title: 'Four'},
-            {id: 5, title: 'Five'},
-          ]
-        },
-        {
-          id: 2, title: 'Medium', chapters: [
-            {id: 6, title: 'Six'},
-            {id: 7, title: 'Seven'},
-            {id: 8, title: 'Eight'},
-            {id: 9, title: 'Nine'},
-            {id: 10, title: 'Ten'},
-          ]
-        },
-      ]
-    }
-  }
 
-  render() {
+const List = ({list, toggleChapter}) => ( //Dispatch send actions to redux
+  <aside>
+    {list.map(list => (
+      <div key={list.id}>
+        <strong>{list.title}</strong>
+        <ul>
+          {list.chapters.map(chapter => (
+            <li key={chapter.id}>
+              {chapter.title}
+              <button onClick={() => toggleChapter(list, chapter)}> Select </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </aside>
+);
 
-    const { list } = this.state;
+const mapStateToProps = state => ({
+  list: state.chapter.list
+});
 
-    return (
-      <aside>
-        { list.map(list => (
-          <div key={list.id}>
-            <strong>{list.title}</strong>
-            <ul>
-              {list.chapters.map(chapters => (
-                <li key={chapters.id}>
-                  {chapters.title}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </aside>
-    );
-  }
-}
+const mapDispatchToProps = dispatch => 
+  //toggleChapter: (list, chapter) => dispatch(ChapterActions.toggleChapters(list, chapter))
+  bindActionCreators(ChapterActions, dispatch);
+;
+
+export default connect(mapStateToProps, mapDispatchToProps)(List);
